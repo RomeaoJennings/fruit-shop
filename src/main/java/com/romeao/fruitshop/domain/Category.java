@@ -14,10 +14,16 @@ public class Category {
 
     private String name;
 
-    public Category() { }
+    public static Category of(String name) {
+        Category result = new Category();
+        result.name = name;
+        return result;
+    }
 
-    public Category(String name) {
-        this.name = name;
+    public static Category of(Long id, String name) {
+        Category result = of(name);
+        result.id = id;
+        return result;
     }
 
     public Long getId() {

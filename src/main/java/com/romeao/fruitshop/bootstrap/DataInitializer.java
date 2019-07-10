@@ -24,11 +24,11 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void addCategories() {
-        categoryRepository.save(new Category("Fruits"));
-        categoryRepository.save(new Category("Dried"));
-        categoryRepository.save(new Category("Fresh"));
-        categoryRepository.save(new Category("Exotic"));
-        categoryRepository.save(new Category("Nuts"));
+        categoryRepository.save(Category.of("Fruits"));
+        categoryRepository.save(Category.of("Dried"));
+        categoryRepository.save(Category.of("Fresh"));
+        categoryRepository.save(Category.of("Exotic"));
+        categoryRepository.save(Category.of("Nuts"));
         log.info("Added categories: {} records", categoryRepository.count());
     }
 }
