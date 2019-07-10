@@ -1,7 +1,7 @@
-package com.romeao.fruitshop.service;
+package com.romeao.fruitshop.api.v1.services;
 
 
-import com.romeao.fruitshop.api.v1.model.CategoryDto;
+import com.romeao.fruitshop.api.v1.models.CategoryDto;
 
 import java.util.List;
 

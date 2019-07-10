@@ -1,8 +1,8 @@
-package com.romeao.fruitshop.service;
+package com.romeao.fruitshop.api.v1.services;
 
-import com.romeao.fruitshop.api.v1.mapper.CategoryMapper;
-import com.romeao.fruitshop.api.v1.model.CategoryDto;
-import com.romeao.fruitshop.repository.CategoryRepository;
+import com.romeao.fruitshop.api.v1.mappers.CategoryMapper;
+import com.romeao.fruitshop.api.v1.models.CategoryDto;
+import com.romeao.fruitshop.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.romeao.fruitshop.bootstrap;
 
 import com.romeao.fruitshop.domain.Category;
-import com.romeao.fruitshop.repository.CategoryRepository;
+import com.romeao.fruitshop.repositories.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

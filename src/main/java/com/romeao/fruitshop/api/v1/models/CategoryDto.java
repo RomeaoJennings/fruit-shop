@@ -1,4 +1,4 @@
-package com.romeao.fruitshop.api.v1.model;
+package com.romeao.fruitshop.api.v1.models;
 
 public class CategoryDto {
     private Long id;

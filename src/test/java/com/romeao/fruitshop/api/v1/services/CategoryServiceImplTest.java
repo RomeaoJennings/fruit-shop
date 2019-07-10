@@ -1,9 +1,9 @@
-package com.romeao.fruitshop.service;
+package com.romeao.fruitshop.api.v1.services;
 
-import com.romeao.fruitshop.api.v1.mapper.CategoryMapper;
-import com.romeao.fruitshop.api.v1.model.CategoryDto;
+import com.romeao.fruitshop.api.v1.mappers.CategoryMapper;
+import com.romeao.fruitshop.api.v1.models.CategoryDto;
 import com.romeao.fruitshop.domain.Category;
-import com.romeao.fruitshop.repository.CategoryRepository;
+import com.romeao.fruitshop.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

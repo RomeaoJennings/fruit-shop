@@ -1,4 +1,4 @@
-package com.romeao.fruitshop.repository;
+package com.romeao.fruitshop.repositories;
 
 import com.romeao.fruitshop.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

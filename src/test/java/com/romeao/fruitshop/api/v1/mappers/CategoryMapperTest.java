@@ -1,6 +1,6 @@
-package com.romeao.fruitshop.api.v1.mapper;
+package com.romeao.fruitshop.api.v1.mappers;
 
-import com.romeao.fruitshop.api.v1.model.CategoryDto;
+import com.romeao.fruitshop.api.v1.models.CategoryDto;
 import com.romeao.fruitshop.domain.Category;
 import org.junit.jupiter.api.Test;
 
