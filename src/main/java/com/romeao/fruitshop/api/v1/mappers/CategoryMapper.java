@@ -6,9 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CategoryMapper {
+public interface CategoryMapper extends BaseMapper<Category, CategoryDto> {
 
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
-
-    CategoryDto toDto(Category category);
 }
