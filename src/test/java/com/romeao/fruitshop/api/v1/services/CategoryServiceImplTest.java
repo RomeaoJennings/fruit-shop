@@ -6,8 +6,9 @@ import com.romeao.fruitshop.domain.Category;
 import com.romeao.fruitshop.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
 
     // Test Category 2 Constants
@@ -37,9 +39,7 @@ class CategoryServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
         categoryService = new CategoryServiceImpl(CategoryMapper.INSTANCE, categoryRepository);
-
         categoryList = new ArrayList<>();
 
         categoryOne = Category.of(ID_ONE, NAME_ONE);
@@ -55,7 +55,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findAll()).thenReturn(categoryList);
 
         // when
-        List<CategoryDto> allCategories = categoryService.getAllCategories();
+        List<CategoryDto> allCategories = categoryService.findAll();
 
         // then
         assertNotNull(allCategories);
@@ -66,12 +66,12 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void getAllCategories_noResults() {
+    void getAllCategories_withNoResults() {
         // given
         when(categoryRepository.findAll()).thenReturn(new ArrayList<>());
 
         // when
-        List<CategoryDto> allCategories = categoryService.getAllCategories();
+        List<CategoryDto> allCategories = categoryService.findAll();
 
         // then
         assertNotNull(allCategories);
@@ -87,7 +87,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findByName(NAME_TWO)).thenReturn(categoryTwo);
 
         // when
-        CategoryDto dto = categoryService.getCategoryByName(NAME_TWO);
+        CategoryDto dto = categoryService.findByName(NAME_TWO);
 
         // then
         assertNotNull(dto);
@@ -99,12 +99,12 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void getCategoryByName_notFound() {
+    void getCategoryByName_withUnknownCategory() {
         // given
         when(categoryRepository.findByName(UNKNOWN)).thenReturn(null);
 
         // when
-        CategoryDto dto = categoryService.getCategoryByName(UNKNOWN);
+        CategoryDto dto = categoryService.findByName(UNKNOWN);
 
         // then
         assertNull(dto);

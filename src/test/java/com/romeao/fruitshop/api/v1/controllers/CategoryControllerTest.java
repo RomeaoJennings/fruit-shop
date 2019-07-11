@@ -2,6 +2,7 @@ package com.romeao.fruitshop.api.v1.controllers;
 
 import com.romeao.fruitshop.api.v1.models.CategoryDto;
 import com.romeao.fruitshop.api.v1.services.CategoryService;
+import com.romeao.fruitshop.api.v1.util.Urls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
-    private static final String GET_CATEGORIES_URL = "/api/v1/categories/";
 
     // Test Category 1 Constants
     private static final String NAME_ONE = "FirstCategory";
@@ -63,9 +63,9 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategories() throws Exception {
-        when(categoryService.getAllCategories()).thenReturn(dtoList);
+        when(categoryService.findAll()).thenReturn(dtoList);
 
-        mockMvc.perform(get(GET_CATEGORIES_URL))
+        mockMvc.perform(get(Urls.CATEGORIES))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(2)))
                 .andExpect(jsonPath("$.categories[*].id",
@@ -73,43 +73,43 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.categories[*].name", containsInAnyOrder(NAME_ONE,
                         NAME_TWO)));
 
-        verify(categoryService, times(1)).getAllCategories();
+        verify(categoryService, times(1)).findAll();
         verifyNoMoreInteractions(categoryService);
     }
 
     @Test
     void getAllCategories_noResults() throws Exception {
-        when(categoryService.getAllCategories()).thenReturn(new ArrayList<>());
+        when(categoryService.findAll()).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get(GET_CATEGORIES_URL))
+        mockMvc.perform(get(Urls.CATEGORIES))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(0)));
 
-        verify(categoryService, times(1)).getAllCategories();
+        verify(categoryService, times(1)).findAll();
         verifyNoMoreInteractions(categoryService);
     }
 
     @Test
     void getCategoryByName() throws Exception {
-        when(categoryService.getCategoryByName(NAME_ONE)).thenReturn(dtoList.get(0));
+        when(categoryService.findByName(NAME_ONE)).thenReturn(dtoList.get(0));
 
-        mockMvc.perform(get(GET_CATEGORIES_URL + NAME_ONE))
+        mockMvc.perform(get(Urls.CATEGORIES + NAME_ONE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(ID_ONE.intValue())))
                 .andExpect(jsonPath("$.name", equalTo(NAME_ONE)));
 
-        verify(categoryService, times(1)).getCategoryByName(NAME_ONE);
+        verify(categoryService, times(1)).findByName(NAME_ONE);
         verifyNoMoreInteractions(categoryService);
     }
 
     @Test
     void getCategoriesByName_noResults() throws Exception {
-        when(categoryService.getCategoryByName(any())).thenReturn(null);
+        when(categoryService.findByName(any())).thenReturn(null);
 
-        mockMvc.perform(get(GET_CATEGORIES_URL + UNKNOWN))
+        mockMvc.perform(get(Urls.CATEGORIES + UNKNOWN))
                 .andExpect(status().isOk());
 
-        verify(categoryService, times(1)).getCategoryByName(any());
+        verify(categoryService, times(1)).findByName(any());
         verifyNoMoreInteractions(categoryService);
     }
 }

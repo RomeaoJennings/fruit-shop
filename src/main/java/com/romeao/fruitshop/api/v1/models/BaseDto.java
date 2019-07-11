@@ -1,7 +1,7 @@
 package com.romeao.fruitshop.api.v1.models;
 
 public class BaseDto {
-    private Long id;
+    protected Long id;
 
     public Long getId() {
         return id;

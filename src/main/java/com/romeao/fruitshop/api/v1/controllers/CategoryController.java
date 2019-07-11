@@ -22,12 +22,12 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<CategoryDtoList> getAllCategories() {
-        CategoryDtoList responseBody = CategoryDtoList.of(categoryService.getAllCategories());
+        CategoryDtoList responseBody = CategoryDtoList.of(categoryService.findAll());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     @GetMapping("/{categoryName}")
     public ResponseEntity<CategoryDto> getCategoryByName(@PathVariable String categoryName) {
-        return new ResponseEntity<>(categoryService.getCategoryByName(categoryName), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.findByName(categoryName), HttpStatus.OK);
     }
 }

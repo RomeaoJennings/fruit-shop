@@ -13,7 +13,7 @@ class CategoryMapperTest {
     private static Long ID = 5L;
 
     @Test
-    void toDto_happyPath() {
+    void toDto() {
         // given
         Category category = Category.of(ID, NAME);
 
@@ -27,7 +27,26 @@ class CategoryMapperTest {
     }
 
     @Test
-    void toDto_nullParameter() {
+    void toDto_withNullEntity() {
         assertNull(mapper.toDto(null));
+    }
+
+    @Test
+    void toEntity() {
+        // given
+        CategoryDto dto = CategoryDto.of(ID, NAME);
+
+        // when
+        Category entity = mapper.toEntity(dto);
+
+        // then
+        assertNotNull(entity);
+        assertEquals(ID, entity.getId());
+        assertEquals(NAME, entity.getName());
+    }
+
+    @Test
+    void toEntity_withNullDto() {
+        assertNull(mapper.toEntity(null));
     }
 }
