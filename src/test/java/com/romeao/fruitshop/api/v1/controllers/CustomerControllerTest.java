@@ -280,4 +280,48 @@ class CustomerControllerTest {
         verify(customerService, times(1)).findById(NOT_FOUND_ID);
         verifyNoMoreInteractions(customerService);
     }
+
+    @Test
+    void updateCustomer_withNewFirstName() throws Exception {
+        // given
+        when(customerService.findById(ID_ONE)).thenReturn(dtoOne);
+        when(customerService.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        String requestBody = jsonMapper.writeValueAsString(CustomerDto.of(null, FIRST_TWO, null));
+
+        // when
+        mockMvc.perform(patch(Endpoints.Customers.byCustomerIdUrl(ID_ONE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(ID_ONE.intValue())))
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_TWO)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_ONE)));
+
+        verify(customerService, times(1)).findById(ID_ONE);
+        verify(customerService, times(1)).save(any());
+        verifyNoMoreInteractions(customerService);
+    }
+
+    @Test
+    void updateCustomer_withNewLastName() throws Exception {
+        // given
+        when(customerService.findById(ID_ONE)).thenReturn(dtoOne);
+        when(customerService.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        String requestBody = jsonMapper.writeValueAsString(CustomerDto.of(null, "", LAST_TWO));
+
+        // when
+        mockMvc.perform(patch(Endpoints.Customers.byCustomerIdUrl(ID_ONE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(ID_ONE.intValue())))
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_ONE)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_TWO)));
+
+        verify(customerService, times(1)).findById(ID_ONE);
+        verify(customerService, times(1)).save(any());
+        verifyNoMoreInteractions(customerService);
+    }
 }

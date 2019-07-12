@@ -60,6 +60,23 @@ public class CustomerController {
         return customerService.save(updatedCustomer);
     }
 
+    @PatchMapping("/{customerId}")
+    public CustomerDto updateCustomer(@PathVariable String customerId,
+                                      @RequestBody CustomerDto updatedValues) {
+        CustomerDto existingCustomer = getCustomer(customerId);
+
+        // Update values, if they were provided and not blank
+        String firstName = updatedValues.getFirstName();
+        String lastName = updatedValues.getLastName();
+        if (firstName != null && !firstName.isEmpty()) {
+            existingCustomer.setFirstName(firstName);
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            existingCustomer.setLastName(lastName);
+        }
+        return customerService.save(existingCustomer);
+    }
+
     private CustomerDto getCustomer(String customerId) {
         Long id;
         try {
