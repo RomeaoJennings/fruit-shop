@@ -23,8 +23,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +45,7 @@ class CustomerControllerTest {
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     private static List<CustomerDto> dtoList;
+    private static CustomerDto dtoOne;
     private static CustomerDto dtoTwo;
 
 
@@ -60,7 +60,8 @@ class CustomerControllerTest {
     @BeforeEach
     void setUp() {
         dtoList = new ArrayList<>();
-        dtoList.add(CustomerDto.of(ID_ONE, FIRST_ONE, LAST_ONE));
+        dtoOne = CustomerDto.of(ID_ONE, FIRST_ONE, LAST_ONE);
+        dtoList.add(dtoOne);
         dtoTwo = CustomerDto.of(ID_TWO, FIRST_TWO, LAST_TWO);
         dtoList.add(dtoTwo);
 
@@ -198,5 +199,85 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.error", equalTo(ErrorTemplates.FieldRequired("lastName"))));
 
         verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    void replaceCustomer() throws Exception {
+        // given
+        when(customerService.findById(ID_ONE)).thenReturn(dtoOne);
+        when(customerService.save(any()))  // return the saved object back
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        String requestBody = jsonMapper.writeValueAsString(
+                CustomerDto.of(null, FIRST_TWO, LAST_TWO));
+
+        mockMvc.perform(put(Endpoints.Customers.byCustomerIdUrl(ID_ONE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(ID_ONE.intValue())))
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_TWO)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_TWO)));
+
+        verify(customerService, times(1)).findById(ID_ONE);
+        verify(customerService, times(1)).save(any());
+        verifyNoMoreInteractions(customerService);
+    }
+
+    @Test
+    void replaceCustomer_withMissingLastName() throws Exception {
+        // given
+        String requestBody = jsonMapper.writeValueAsString(CustomerDto.of(null, LAST_ONE, null));
+
+        mockMvc.perform(put(Endpoints.Customers.byCustomerIdUrl(ID_ONE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode",
+                        equalTo(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.error",
+                        equalTo(ErrorTemplates.FieldRequired("lastName"))));
+
+        verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    void replaceCustomer_withMalformedCustomerId() throws Exception {
+        // given
+        String requestBody = jsonMapper.writeValueAsString(dtoOne);
+
+        mockMvc.perform(put(Endpoints.Customers.URL + "/" + INVALID_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode",
+                        equalTo(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.error",
+                        equalTo(ErrorTemplates.CustomerIdInvalid(INVALID_ID))));
+
+        verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    void replaceCustomer_withNotFoundCustomerId() throws Exception {
+        // given
+        when(customerService.findById(NOT_FOUND_ID)).thenReturn(null);
+        String requestBody = jsonMapper.writeValueAsString(dtoOne);
+
+        mockMvc.perform(put(Endpoints.Customers.byCustomerIdUrl(NOT_FOUND_ID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.statusCode",
+                        equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error",
+                        equalTo(ErrorTemplates.CustomerIdNotFound(NOT_FOUND_ID))));
+
+        verify(customerService, times(1)).findById(NOT_FOUND_ID);
+        verifyNoMoreInteractions(customerService);
     }
 }

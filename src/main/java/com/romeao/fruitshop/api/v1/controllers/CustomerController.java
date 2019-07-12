@@ -31,6 +31,36 @@ public class CustomerController {
 
     @GetMapping("/{customerId}")
     public CustomerDto getCustomerById(@PathVariable String customerId) {
+        return getCustomer(customerId);
+    }
+
+    @PostMapping
+    public CustomerDto createNewCustomer(@Valid @RequestBody CustomerDto customer,
+                                         BindingResult validator) {
+        // validate incoming object
+        verifyCustomerDto(validator);
+
+        // prevent users from passing in customer id field in request to overwrite existing data
+        // TODO: Add RestAssured library and convert this to use full schema validation
+        customer.setId(null);
+        return customerService.save(customer);
+    }
+
+    @PutMapping("/{customerId}")
+    public CustomerDto replaceCustomer(@PathVariable String customerId,
+                                       @Valid @RequestBody CustomerDto updatedCustomer,
+                                       BindingResult validator) {
+        // validate incoming object
+        verifyCustomerDto(validator);
+
+        // make sure customer exists at passed id
+        CustomerDto existingCustomer = getCustomer(customerId);
+
+        updatedCustomer.setId(existingCustomer.getId());
+        return customerService.save(updatedCustomer);
+    }
+
+    private CustomerDto getCustomer(String customerId) {
         Long id;
         try {
             id = Long.valueOf(customerId);
@@ -45,17 +75,10 @@ public class CustomerController {
         return dto;
     }
 
-    @PostMapping
-    public CustomerDto createNewCustomer(@Valid @RequestBody CustomerDto customer,
-                                         BindingResult validator) {
+    private void verifyCustomerDto(BindingResult validator) {
         if (validator.hasFieldErrors()) {
             FieldError error = validator.getFieldError();
             throw new BadRequestException(ErrorTemplates.FieldRequired(error.getField()));
         }
-
-        // prevent users from passing in customer id field in request to overwrite existing data
-        // TODO: Add RestAssured library and convert this to use full schema validation
-        customer.setId(null);
-        return customerService.save(customer);
     }
 }

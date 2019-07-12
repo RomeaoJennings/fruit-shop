@@ -12,10 +12,10 @@ public class ErrorTemplates {
     }
 
     public static String CustomerIdInvalid(String customerId) {
-        return String.format("Value: %s is an invalid customer id.", customerId);
+        return String.format("Value '%s' is an invalid customer id.", customerId);
     }
 
     public static String CustomerIdNotFound(Long customerId) {
-        return String.format("Customer with id: %s not found.", customerId);
+        return String.format("Customer with id '%s' not found.", customerId);
     }
 }
