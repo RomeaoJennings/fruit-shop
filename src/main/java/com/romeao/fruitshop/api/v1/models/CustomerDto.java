@@ -1,6 +1,6 @@
 package com.romeao.fruitshop.api.v1.models;
 
-import com.romeao.fruitshop.api.v1.util.Urls;
+import com.romeao.fruitshop.api.v1.util.Endpoints;
 
 public class CustomerDto extends BaseDto {
     private String firstName;
@@ -31,6 +31,6 @@ public class CustomerDto extends BaseDto {
     }
 
     public String getCustomerUrl() {
-        return Urls.CUSTOMERS + id;
+        return Endpoints.Customers.byCustomerIdUrl(id);
     }
 }

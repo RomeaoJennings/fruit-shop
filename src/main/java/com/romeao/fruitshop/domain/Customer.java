@@ -15,6 +15,10 @@ public class Customer extends BaseEntity {
         return customer;
     }
 
+    public static Customer of(String firstName, String lastName) {
+        return Customer.of(null, firstName, lastName);
+    }
+
     public String getFirstName() {
         return firstName;
     }

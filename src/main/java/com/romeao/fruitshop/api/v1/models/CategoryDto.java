@@ -1,5 +1,7 @@
 package com.romeao.fruitshop.api.v1.models;
 
+import com.romeao.fruitshop.api.v1.util.Endpoints;
+
 public class CategoryDto extends BaseDto {
     private String name;
 
@@ -16,5 +18,9 @@ public class CategoryDto extends BaseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCategoryUrl() {
+        return Endpoints.Categories.byCategoryNameUrl(name);
     }
 }
