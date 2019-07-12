@@ -111,4 +111,27 @@ class CustomerServiceImplTest {
         verify(customerRepository, times(1)).findById(NOT_FOUND_ID);
         verifyNoMoreInteractions(customerRepository);
     }
+
+    @Test
+    void save() {
+        // given
+        when(customerRepository.save(any())).thenAnswer(invocation -> {
+            Customer customer = invocation.getArgument(0);
+            // return passed in customer with ID set
+            customer.setId(ID_ONE);
+            return customer;
+        });
+
+        // when
+        CustomerDto savedDto = customerService.save(CustomerDto.of(null, FIRST_ONE, LAST_ONE));
+
+        // then
+        assertNotNull(savedDto);
+        assertEquals(ID_ONE, savedDto.getId());
+        assertEquals(FIRST_ONE, savedDto.getFirstName());
+        assertEquals(LAST_ONE, savedDto.getLastName());
+
+        verify(customerRepository, times(1)).save(any());
+        verifyNoMoreInteractions(customerRepository);
+    }
 }
