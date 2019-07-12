@@ -6,14 +6,12 @@ import com.romeao.fruitshop.api.v1.services.CategoryService;
 import com.romeao.fruitshop.api.v1.util.Endpoints;
 import com.romeao.fruitshop.api.v1.util.ErrorTemplates;
 import com.romeao.fruitshop.exceptions.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(Endpoints.Categories.URL)
 public class CategoryController {
 
@@ -24,18 +22,16 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<CategoryDtoList> getAllCategories() {
-        CategoryDtoList responseBody = CategoryDtoList.of(categoryService.findAll());
-        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    public CategoryDtoList getAllCategories() {
+        return CategoryDtoList.of(categoryService.findAll());
     }
 
     @GetMapping("/{categoryName}")
-    public ResponseEntity<CategoryDto> getCategoryByName(@PathVariable String categoryName) {
+    public CategoryDto getCategoryByName(@PathVariable String categoryName) {
         CategoryDto dto = categoryService.findByName(categoryName);
         if (dto == null) {
             throw new ResourceNotFoundException(ErrorTemplates.CategoryNotFound(categoryName));
         }
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return dto;
     }
 }
