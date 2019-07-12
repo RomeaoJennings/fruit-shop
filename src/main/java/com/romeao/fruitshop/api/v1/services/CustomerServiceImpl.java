@@ -2,6 +2,7 @@ package com.romeao.fruitshop.api.v1.services;
 
 import com.romeao.fruitshop.api.v1.mappers.CustomerMapper;
 import com.romeao.fruitshop.api.v1.models.CustomerDto;
+import com.romeao.fruitshop.domain.Customer;
 import com.romeao.fruitshop.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +31,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDto findById(Long id) {
         return customerMapper.toDto(customerRepository.findById(id).orElse(null));
+    }
+
+    @Override
+    public CustomerDto save(CustomerDto customerDto) {
+        Customer customer = customerMapper.toEntity(customerDto);
+        return customerMapper.toDto(customerRepository.save(customer));
     }
 }

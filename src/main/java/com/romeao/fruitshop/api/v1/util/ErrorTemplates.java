@@ -7,6 +7,10 @@ public class ErrorTemplates {
     }
 
     // Customers
+    public static String FieldRequired(String fieldName) {
+        return String.format("Field '%s' is required.", fieldName);
+    }
+
     public static String CustomerIdInvalid(String customerId) {
         return String.format("Value: %s is an invalid customer id.", customerId);
     }

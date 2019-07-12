@@ -7,10 +7,11 @@ import com.romeao.fruitshop.api.v1.util.Endpoints;
 import com.romeao.fruitshop.api.v1.util.ErrorTemplates;
 import com.romeao.fruitshop.exceptions.BadRequestException;
 import com.romeao.fruitshop.exceptions.ResourceNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(Endpoints.Customers.URL)
@@ -21,6 +22,7 @@ public class CustomerController {
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
+
 
     @GetMapping
     public CustomerDtoList getAllCustomers() {
@@ -41,5 +43,19 @@ public class CustomerController {
             throw new ResourceNotFoundException(ErrorTemplates.CustomerIdNotFound(id));
         }
         return dto;
+    }
+
+    @PostMapping
+    public CustomerDto createNewCustomer(@Valid @RequestBody CustomerDto customer,
+                                         BindingResult validator) {
+        if (validator.hasFieldErrors()) {
+            FieldError error = validator.getFieldError();
+            throw new BadRequestException(ErrorTemplates.FieldRequired(error.getField()));
+        }
+
+        // prevent users from passing in customer id field in request to overwrite existing data
+        // TODO: Add RestAssured library and convert this to use full schema validation
+        customer.setId(null);
+        return customerService.save(customer);
     }
 }

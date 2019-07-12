@@ -1,5 +1,6 @@
 package com.romeao.fruitshop.api.v1.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romeao.fruitshop.api.v1.exceptionhandlers.FruitShopExceptionHandler;
 import com.romeao.fruitshop.api.v1.models.CustomerDto;
 import com.romeao.fruitshop.api.v1.services.CustomerService;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -19,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,9 +41,13 @@ class CustomerControllerTest {
 
     private static final Long NOT_FOUND_ID = 3L;
     private static final String INVALID_ID = "3ABC";
+    private static final Long SAVED_ID = 10L;
+
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     private static List<CustomerDto> dtoList;
     private static CustomerDto dtoTwo;
+
 
     @Mock
     private CustomerService customerService;
@@ -130,6 +138,64 @@ class CustomerControllerTest {
                         equalTo(HttpStatus.BAD_REQUEST.value())))
                 .andExpect(jsonPath("$.error",
                         equalTo(ErrorTemplates.CustomerIdInvalid(INVALID_ID))));
+
+        verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    void createNewCustomer() throws Exception {
+        // given
+        when(customerService.save(any())).thenAnswer(invocationOnMock -> {
+            CustomerDto result = invocationOnMock.getArgument(0);
+            result.setId(SAVED_ID);
+            return result;
+        });
+        String requestBody = jsonMapper.writeValueAsString(
+                CustomerDto.of(null, FIRST_ONE, LAST_ONE));
+
+        mockMvc.perform(post(Endpoints.Customers.URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(SAVED_ID.intValue())))
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_ONE)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_ONE)));
+
+        verify(customerService, times(1)).save(any());
+        verifyNoMoreInteractions(customerService);
+    }
+
+    @Test
+    void createNewCustomer_withMissingFirstName() throws Exception {
+        // given
+        String requestBody = jsonMapper.writeValueAsString(
+                CustomerDto.of(null, null, LAST_ONE));
+
+        mockMvc.perform(post(Endpoints.Customers.URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode", equalTo(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.error", equalTo(ErrorTemplates.FieldRequired("firstName"))));
+
+        verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    void createNewCustomer_withMissingLastName() throws Exception {
+        // given
+        String requestBody = jsonMapper.writeValueAsString(
+                CustomerDto.of(null, FIRST_ONE, null));
+
+        mockMvc.perform(post(Endpoints.Customers.URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode", equalTo(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.error", equalTo(ErrorTemplates.FieldRequired("lastName"))));
 
         verifyZeroInteractions(customerService);
     }
