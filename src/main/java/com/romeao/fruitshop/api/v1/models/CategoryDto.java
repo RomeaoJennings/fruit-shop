@@ -21,6 +21,6 @@ public class CategoryDto extends BaseDto {
     }
 
     public String getCategoryUrl() {
-        return Endpoints.Categories.byCategoryNameUrl(name);
+        return id == null ? null : Endpoints.Categories.byCategoryNameUrl(name);
     }
 }
