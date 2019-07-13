@@ -2,7 +2,7 @@ package com.romeao.fruitshop.domain;
 
 import javax.persistence.Entity;
 
-@Entity
+@Entity(name = "customers")
 public class Customer extends BaseEntity {
     private String firstName;
     private String lastName;

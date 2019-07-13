@@ -2,7 +2,7 @@ package com.romeao.fruitshop.domain;
 
 import javax.persistence.Entity;
 
-@Entity
+@Entity(name = "categories")
 public class Category extends BaseEntity {
 
     private String name;
