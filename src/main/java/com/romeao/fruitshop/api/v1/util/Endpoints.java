@@ -15,11 +15,21 @@ public class Endpoints {
         }
     }
 
+
     public static class Categories {
         public static final String URL = API_BASE + "/categories";
 
         public static String byCategoryNameUrl(String name) {
             return concatenate(URL, name);
+        }
+    }
+
+
+    public static class Vendors {
+        public static final String URL = API_BASE + "/vendors";
+
+        public static String byVendorIdUrl(Long id) {
+            return concatenate(URL, id.toString());
         }
     }
 }

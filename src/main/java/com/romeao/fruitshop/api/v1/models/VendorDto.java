@@ -1,5 +1,7 @@
 package com.romeao.fruitshop.api.v1.models;
 
+import com.romeao.fruitshop.api.v1.util.Endpoints;
+
 public class VendorDto extends BaseDto {
     private String name;
 
@@ -20,5 +22,9 @@ public class VendorDto extends BaseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVendorUrl() {
+        return id == null ? null : Endpoints.Vendors.byVendorIdUrl(id);
     }
 }

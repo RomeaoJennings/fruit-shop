@@ -2,8 +2,10 @@ package com.romeao.fruitshop.bootstrap;
 
 import com.romeao.fruitshop.domain.Category;
 import com.romeao.fruitshop.domain.Customer;
+import com.romeao.fruitshop.domain.Vendor;
 import com.romeao.fruitshop.repositories.CategoryRepository;
 import com.romeao.fruitshop.repositories.CustomerRepository;
+import com.romeao.fruitshop.repositories.VendorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -15,18 +17,22 @@ public class DataInitializer implements CommandLineRunner {
     private final Logger log = LoggerFactory.getLogger(DataInitializer.class);
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
 
     public DataInitializer(CategoryRepository categoryRepository,
-                           CustomerRepository customerRepository) {
+                           CustomerRepository customerRepository,
+                           VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
     public void run(String... args) {
         addCategories();
         addCustomers();
+        addVendors();
     }
 
     private void addCategories() {
@@ -47,5 +53,12 @@ public class DataInitializer implements CommandLineRunner {
         customerRepository.save(Customer.of("Romeao", "Jennings"));
         customerRepository.save(Customer.of("Liam", "Jennings"));
         log.info("Added customers: {} records", customerRepository.count());
+    }
+
+    private void addVendors() {
+        vendorRepository.save(Vendor.of("Village Flower Shop"));
+        vendorRepository.save(Vendor.of("Pete's Dishes"));
+        vendorRepository.save(Vendor.of("City Hobby Shop"));
+        log.info("Added vendors: {} records", vendorRepository.count());
     }
 }

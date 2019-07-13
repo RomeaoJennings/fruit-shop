@@ -4,10 +4,12 @@ import com.romeao.fruitshop.api.v1.mappers.VendorMapper;
 import com.romeao.fruitshop.api.v1.models.VendorDto;
 import com.romeao.fruitshop.domain.Vendor;
 import com.romeao.fruitshop.repositories.VendorRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class VendorServiceImpl implements VendorService {
     private final VendorRepository repository;
     private final VendorMapper mapper;
