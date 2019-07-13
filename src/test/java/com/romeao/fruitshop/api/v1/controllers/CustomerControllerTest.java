@@ -324,4 +324,32 @@ class CustomerControllerTest {
         verify(customerService, times(1)).save(any());
         verifyNoMoreInteractions(customerService);
     }
+
+    @Test
+    void deleteCustomer() throws Exception {
+        // given
+        when(customerService.findById(ID_ONE)).thenReturn(dtoOne);
+
+        mockMvc.perform(delete(Endpoints.Customers.byCustomerIdUrl(ID_ONE)))
+                .andExpect(status().isOk());
+
+        verify(customerService, times(1)).deleteById(ID_ONE);
+        verify(customerService, times(1)).findById(ID_ONE);
+        verifyNoMoreInteractions(customerService);
+    }
+
+    @Test
+    void deleteCustomer_withNotFoundID() throws Exception {
+        // given
+        when(customerService.findById(NOT_FOUND_ID)).thenReturn(null);
+
+        mockMvc.perform(delete(Endpoints.Customers.byCustomerIdUrl(NOT_FOUND_ID)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.statusCode",
+                        equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error",
+                        equalTo(ErrorTemplates.CustomerIdNotFound(NOT_FOUND_ID))));
+        verify(customerService, times(1)).findById(NOT_FOUND_ID);
+        verifyNoMoreInteractions(customerService);
+    }
 }
