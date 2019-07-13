@@ -2,7 +2,11 @@ package com.romeao.fruitshop.api.v1.models;
 
 import com.romeao.fruitshop.api.v1.util.Endpoints;
 
+import javax.validation.constraints.NotBlank;
+
 public class VendorDto extends BaseDto {
+
+    @NotBlank
     private String name;
 
     public static VendorDto of(Long id, String name) {

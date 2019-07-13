@@ -18,4 +18,12 @@ public class ErrorTemplates {
     public static String CustomerIdNotFound(Long customerId) {
         return String.format("Customer with id '%s' not found.", customerId);
     }
+
+    public static String VendorIdInvalid(String vendorId) {
+        return String.format("Value '%s' is an invalid vendor id.", vendorId);
+    }
+
+    public static String VendorIdNotFound(Long vendorId) {
+        return String.format("Vendor with id '%s' not found.", vendorId);
+    }
 }
