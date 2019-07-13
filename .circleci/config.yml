@@ -43,3 +43,6 @@ jobs:
       # store test reports
       - store_artifacts:
           path:  target
+
+    after_success:
+      - bash <(curl -s https://codecov.io/bash)
