@@ -77,6 +77,13 @@ public class CustomerController {
         return customerService.save(existingCustomer);
     }
 
+    @DeleteMapping("/{customerId}")
+    public void DeleteCustomer(@PathVariable String customerId) {
+        // throw relevant exceptions if customer does not exist or id is malformed.
+        CustomerDto customer = getCustomer(customerId);
+        customerService.deleteById(customer.getId());
+    }
+
     private CustomerDto getCustomer(String customerId) {
         Long id;
         try {

@@ -37,4 +37,9 @@ public class VendorServiceImpl implements VendorService {
         Vendor savedVendor = repository.save(mapper.toEntity(dto));
         return mapper.toDto(savedVendor);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
 }

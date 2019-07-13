@@ -71,6 +71,13 @@ public class VendorController {
         return vendorService.save(existingVendor);
     }
 
+    @DeleteMapping("/{vendorId}")
+    public void DeleteVendor(@PathVariable String vendorId) {
+        // throw relevant exceptions if vendor does not exist or id is malformed.
+        VendorDto vendor = getVendor(vendorId);
+        vendorService.deleteById(vendor.getId());
+    }
+
     private VendorDto getVendor(String vendorId) {
         Long id;
         try {

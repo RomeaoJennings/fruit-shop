@@ -11,4 +11,6 @@ public interface VendorService {
     VendorDto findById(Long id);
 
     VendorDto save(VendorDto dto);
+
+    void deleteById(Long id);
 }

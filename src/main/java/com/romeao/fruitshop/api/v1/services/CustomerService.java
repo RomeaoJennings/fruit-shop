@@ -10,4 +10,6 @@ public interface CustomerService {
     CustomerDto findById(Long id);
 
     CustomerDto save(CustomerDto customerDto);
+
+    void deleteById(Long id);
 }

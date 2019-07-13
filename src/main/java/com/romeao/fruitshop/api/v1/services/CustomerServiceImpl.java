@@ -38,4 +38,9 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerMapper.toEntity(customerDto);
         return customerMapper.toDto(customerRepository.save(customer));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        customerRepository.deleteById(id);
+    }
 }
