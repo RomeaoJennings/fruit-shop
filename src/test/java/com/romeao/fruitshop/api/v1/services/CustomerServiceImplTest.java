@@ -134,4 +134,14 @@ class CustomerServiceImplTest {
         verify(customerRepository, times(1)).save(any());
         verifyNoMoreInteractions(customerRepository);
     }
+
+    @Test
+    void deleteById() {
+        // when
+        customerService.deleteById(ID_ONE);
+
+        // then
+        verify(customerRepository, times(1)).deleteById(ID_ONE);
+        verifyNoMoreInteractions(customerRepository);
+    }
 }

@@ -31,13 +31,13 @@ class VendorServiceImplTest {
     private static final List<Vendor> vendorList = new ArrayList<>();
 
     @Mock
-    private VendorRepository repository;
+    private VendorRepository vendorRepository;
 
-    private VendorService service;
+    private VendorService vendorService;
 
     @BeforeEach
     void setUp() {
-        service = new VendorServiceImpl(repository, VendorMapper.INSTANCE);
+        vendorService = new VendorServiceImpl(vendorRepository, VendorMapper.INSTANCE);
 
         vendorList.clear();
         vendorList.add(Vendor.of(ID_ONE, NAME_ONE));
@@ -47,72 +47,72 @@ class VendorServiceImplTest {
     @Test
     void findAll() {
         // given
-        when(repository.findAll()).thenReturn(vendorList);
+        when(vendorRepository.findAll()).thenReturn(vendorList);
 
         // when
-        List<VendorDto> dtoList = service.findAll();
+        List<VendorDto> dtoList = vendorService.findAll();
 
         //then
         assertNotNull(dtoList);
         assertEquals(2, dtoList.size());
 
-        verify(repository, times(1)).findAll();
-        verifyNoMoreInteractions(repository);
+        verify(vendorRepository, times(1)).findAll();
+        verifyNoMoreInteractions(vendorRepository);
     }
 
     @Test
     void findAll_withNoResults() {
         // given
-        when(repository.findAll()).thenReturn(new ArrayList<>());
+        when(vendorRepository.findAll()).thenReturn(new ArrayList<>());
 
         // when
-        List<VendorDto> dtoList = service.findAll();
+        List<VendorDto> dtoList = vendorService.findAll();
 
         // then
         assertNotNull(dtoList);
         assertEquals(0, dtoList.size());
 
-        verify(repository, times(1)).findAll();
-        verifyNoMoreInteractions(repository);
+        verify(vendorRepository, times(1)).findAll();
+        verifyNoMoreInteractions(vendorRepository);
     }
 
     @Test
     void findById() {
         // given
-        when(repository.findById(ID_ONE))
+        when(vendorRepository.findById(ID_ONE))
                 .thenReturn(Optional.of(Vendor.of(ID_ONE, NAME_ONE)));
 
         // when
-        VendorDto dto = service.findById(ID_ONE);
+        VendorDto dto = vendorService.findById(ID_ONE);
 
         // then
         assertNotNull(dto);
         assertEquals(ID_ONE, dto.getId());
         assertEquals(NAME_ONE, dto.getName());
 
-        verify(repository, times(1)).findById(ID_ONE);
-        verifyNoMoreInteractions(repository);
+        verify(vendorRepository, times(1)).findById(ID_ONE);
+        verifyNoMoreInteractions(vendorRepository);
     }
 
     @Test
     void findById_withUnknownId() {
         // given
-        when(repository.findById(NOT_FOUND_ID)).thenReturn(Optional.empty());
+        when(vendorRepository.findById(NOT_FOUND_ID)).thenReturn(Optional.empty());
 
         // when
-        VendorDto dto = service.findById(NOT_FOUND_ID);
+        VendorDto dto = vendorService.findById(NOT_FOUND_ID);
 
         // then
         assertNull(dto);
 
-        verify(repository, times(1)).findById(NOT_FOUND_ID);
-        verifyNoMoreInteractions(repository);
+        verify(vendorRepository, times(1)).findById(NOT_FOUND_ID);
+        verifyNoMoreInteractions(vendorRepository);
     }
 
     @Test
     void save() {
         // given
-        when(repository.save(any())).thenAnswer(invocation -> {
+        when(vendorRepository.save(any())).thenAnswer(invocation -> {
             Vendor vendor = invocation.getArgument(0);
             // return passed in vendor with ID set
             vendor.setId(ID_ONE);
@@ -120,14 +120,24 @@ class VendorServiceImplTest {
         });
 
         // when
-        VendorDto savedDto = service.save(VendorDto.of(null, NAME_ONE));
+        VendorDto savedDto = vendorService.save(VendorDto.of(null, NAME_ONE));
 
         // then
         assertNotNull(savedDto);
         assertEquals(ID_ONE, savedDto.getId());
         assertEquals(NAME_ONE, savedDto.getName());
 
-        verify(repository, times(1)).save(any());
-        verifyNoMoreInteractions(repository);
+        verify(vendorRepository, times(1)).save(any());
+        verifyNoMoreInteractions(vendorRepository);
+    }
+
+    @Test
+    void deleteById() {
+        // when
+        vendorService.deleteById(ID_ONE);
+
+        // then
+        verify(vendorRepository, times(1)).deleteById(ID_ONE);
+        verifyNoMoreInteractions(vendorRepository);
     }
 }
