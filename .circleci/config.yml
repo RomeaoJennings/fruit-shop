@@ -50,4 +50,4 @@ jobs:
 
       # send code coverage to CodeCov.io
       - codecov/upload:
-          file: {{ ~/target }}
+          file:
