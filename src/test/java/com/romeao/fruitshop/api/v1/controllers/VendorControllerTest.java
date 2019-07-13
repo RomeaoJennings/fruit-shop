@@ -275,4 +275,32 @@ class VendorControllerTest {
         verify(vendorService, times(1)).save(any());
         verifyNoMoreInteractions(vendorService);
     }
+
+    @Test
+    void deleteVendor() throws Exception {
+        // given
+        when(vendorService.findById(ID_ONE)).thenReturn(vendorOne);
+
+        mockMvc.perform(delete(Endpoints.Vendors.byVendorIdUrl(ID_ONE)))
+                .andExpect(status().isOk());
+
+        verify(vendorService, times(1)).deleteById(ID_ONE);
+        verify(vendorService, times(1)).findById(ID_ONE);
+        verifyNoMoreInteractions(vendorService);
+    }
+
+    @Test
+    void deleteVendor_withNotFoundID() throws Exception {
+        // given
+        when(vendorService.findById(NOT_FOUND_ID)).thenReturn(null);
+
+        mockMvc.perform(delete(Endpoints.Vendors.byVendorIdUrl(NOT_FOUND_ID)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.statusCode",
+                        equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error",
+                        equalTo(ErrorTemplates.VendorIdNotFound(NOT_FOUND_ID))));
+        verify(vendorService, times(1)).findById(NOT_FOUND_ID);
+        verifyNoMoreInteractions(vendorService);
+    }
 }
