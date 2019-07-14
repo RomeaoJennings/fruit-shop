@@ -11,7 +11,7 @@ public class VendorDto extends BaseDto {
 
     public static VendorDto of(Long id, String name) {
         VendorDto vendorDto = new VendorDto();
-        vendorDto.id = id;
+        vendorDto.setId(id);
         vendorDto.name = name;
         return vendorDto;
     }
@@ -28,7 +28,7 @@ public class VendorDto extends BaseDto {
         this.name = name;
     }
 
-    public String getVendorUrl() {
-        return id == null ? null : Endpoints.Vendors.byVendorIdUrl(id);
+    public String addVendorUrl() {
+        return getId() == null ? null : Endpoints.Vendors.byVendorIdUrl(getId());
     }
 }

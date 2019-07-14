@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class BaseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    final Map<String, String> links = new HashMap<>();
+    private final Map<String, String> links = new HashMap<>();
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    final Map<String, String> actions = new HashMap<>();
+    private final Map<String, String> actions = new HashMap<>();
 
-    Long id;
+    private Long id;
 
     public Long getId() {
         return id;

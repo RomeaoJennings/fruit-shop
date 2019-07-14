@@ -2,12 +2,15 @@ package com.romeao.fruitshop.api.v1.models;
 
 import com.romeao.fruitshop.api.v1.util.Endpoints;
 
+import javax.validation.constraints.NotBlank;
+
 public class CategoryDto extends BaseDto {
+    @NotBlank
     private String name;
 
     public static CategoryDto of(Long id, String name) {
         CategoryDto dto = new CategoryDto();
-        dto.id = id;
+        dto.setId(id);
         dto.name = name;
         return dto;
     }
@@ -21,7 +24,9 @@ public class CategoryDto extends BaseDto {
     }
 
     public void addCategoryUrl() {
-        if (id == null) { throw new IllegalStateException("Cannot provide link with null id."); }
-        links.put("categoryUrl", Endpoints.Categories.byCategoryNameUrl(name));
+        if (name == null || name.isEmpty()) {
+            throw new IllegalStateException("Cannot provide link with empty name.");
+        }
+        getLinks().put("categoryUrl", Endpoints.Categories.byCategoryNameUrl(name));
     }
 }

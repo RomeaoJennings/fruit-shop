@@ -12,7 +12,7 @@ public class ProductDto extends BaseDto {
 
     public static ProductDto of(Long id, String name, BigDecimal price) {
         ProductDto dto = new ProductDto();
-        dto.id = id;
+        dto.setId(id);
         dto.name = name;
         dto.price = price;
         return dto;
@@ -35,7 +35,9 @@ public class ProductDto extends BaseDto {
     }
 
     public void addProductUrl() {
-        if (id == null) { throw new IllegalStateException("Cannot provide link with null id."); }
-        links.put("productUrl", Endpoints.Products.byProductIdUrl(id));
+        if (getId() == null) {
+            throw new IllegalStateException("Cannot provide link with null id.");
+        }
+        getLinks().put("productUrl", Endpoints.Products.byProductIdUrl(getId()));
     }
 }

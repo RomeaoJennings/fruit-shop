@@ -14,7 +14,7 @@ public class CustomerDto extends BaseDto {
 
     public static CustomerDto of(Long id, String firstName, String lastName) {
         CustomerDto dto = new CustomerDto();
-        dto.id = id;
+        dto.setId(id);
         dto.firstName = firstName;
         dto.lastName = lastName;
         return dto;
@@ -37,6 +37,6 @@ public class CustomerDto extends BaseDto {
     }
 
     public String getCustomerUrl() {
-        return id == null ? null : Endpoints.Customers.byCustomerIdUrl(id);
+        return getId() == null ? null : Endpoints.Customers.byCustomerIdUrl(getId());
     }
 }
