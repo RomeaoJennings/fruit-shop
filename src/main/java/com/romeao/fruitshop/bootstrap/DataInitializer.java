@@ -45,10 +45,10 @@ public class DataInitializer implements CommandLineRunner {
 
     private void addCategories() {
         categoryRepository.save(Category.of("Fruits"));
-        categoryRepository.save(Category.of("Dried"));
-        categoryRepository.save(Category.of("Fresh"));
-        categoryRepository.save(Category.of("Exotic"));
-        categoryRepository.save(Category.of("Nuts"));
+        categoryRepository.save(Category.of("Toys"));
+        categoryRepository.save(Category.of("Plants"));
+        categoryRepository.save(Category.of("Clothes"));
+        categoryRepository.save(Category.of("Tools"));
         log.info("Added categories: {} records", categoryRepository.count());
     }
 
@@ -68,22 +68,27 @@ public class DataInitializer implements CommandLineRunner {
         Vendor toyShop = vendorRepository.save(Vendor.of("Pete's Toys"));
         Vendor hobbyShop = vendorRepository.save(Vendor.of("City Hobby Shop"));
 
-        buildAndAttachProduct("Red Rose", 3.95, flowerShop);
-        buildAndAttachProduct("Pink Carnation", 2.50, flowerShop);
 
-        buildAndAttachProduct("Model airplane", 29.99, toyShop, hobbyShop);
-        buildAndAttachProduct("Rubik's Cube", 7.99, toyShop);
+        buildAndAttachProduct("Red Rose", 3.95, "Plants", flowerShop);
+        buildAndAttachProduct("Pink Carnation", 2.50, "Plants", flowerShop);
 
-        buildAndAttachProduct("Drone", 199.99, hobbyShop);
+        buildAndAttachProduct("Model airplane", 29.99, "Toys", toyShop, hobbyShop);
+        buildAndAttachProduct("Rubik's Cube", 7.99, "Toys", toyShop);
 
-        buildAndAttachProduct("Cinderella Doll", 5.95);
+        buildAndAttachProduct("Drone", 199.99, "Toys", hobbyShop);
+
+        buildAndAttachProduct("Cinderella Doll", 5.95, "Toys");
 
         log.info("Added vendors: {} records", vendorRepository.count());
         log.info("Added products: {} records", productRepository.count());
     }
 
-    private void buildAndAttachProduct(String name, double price, Vendor... vendors) {
-        Product product = Product.of(name, BigDecimal.valueOf(price));
+    private void buildAndAttachProduct(String name,
+                                       double price,
+                                       String categoryName,
+                                       Vendor... vendors) {
+        Category category = categoryRepository.findByName(categoryName);
+        Product product = Product.of(name, BigDecimal.valueOf(price), category);
         product.getVendors().addAll(Arrays.asList(vendors));
         productRepository.save(product);
     }

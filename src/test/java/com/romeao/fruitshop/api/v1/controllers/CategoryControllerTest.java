@@ -2,7 +2,9 @@ package com.romeao.fruitshop.api.v1.controllers;
 
 import com.romeao.fruitshop.api.v1.exceptionhandlers.FruitShopExceptionHandler;
 import com.romeao.fruitshop.api.v1.models.CategoryDto;
+import com.romeao.fruitshop.api.v1.models.ProductDto;
 import com.romeao.fruitshop.api.v1.services.CategoryService;
+import com.romeao.fruitshop.api.v1.services.ProductService;
 import com.romeao.fruitshop.api.v1.util.Endpoints;
 import com.romeao.fruitshop.api.v1.util.ErrorTemplates;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +39,15 @@ class CategoryControllerTest {
     private static final Long ID_TWO = 2L;
     private static final String NAME_TWO = "SecondCategory";
 
+    private static final Long PROD_ID_ONE = 1L;
+    private static final String PROD_NAME_ONE = "Product 1";
+    private static final BigDecimal PROD_PRICE_ONE = BigDecimal.valueOf(1.23);
+    private static final ProductDto PRODUCT_ONE = ProductDto.of(
+            PROD_ID_ONE,
+            PROD_NAME_ONE,
+            PROD_PRICE_ONE
+    );
+
     private static final String UNKNOWN = "Unknown";
 
     private List<CategoryDto> dtoList;
@@ -44,6 +56,9 @@ class CategoryControllerTest {
 
     @Mock
     private CategoryService categoryService;
+
+    @Mock
+    private ProductService productService;
 
     @InjectMocks
     private CategoryController categoryController;
@@ -98,14 +113,24 @@ class CategoryControllerTest {
     @Test
     void getCategoryByName() throws Exception {
         when(categoryService.findByName(NAME_ONE)).thenReturn(dtoList.get(0));
-
+        when(productService.findAllByCategoryName(any())).thenReturn(List.of(PRODUCT_ONE));
         mockMvc.perform(get(Endpoints.Categories.byCategoryNameUrl(NAME_ONE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(ID_ONE.intValue())))
-                .andExpect(jsonPath("$.name", equalTo(NAME_ONE)));
+                .andExpect(jsonPath("$.name", equalTo(NAME_ONE)))
+                .andExpect(jsonPath("$.products", hasSize(1)))
+                .andExpect(jsonPath("$.products[0].id",
+                        equalTo(PROD_ID_ONE.intValue())))
+                .andExpect(jsonPath("$.products[0].name",
+                        equalTo(PROD_NAME_ONE)))
+                .andExpect(jsonPath("$.products[0].price",
+                        equalTo(PROD_PRICE_ONE.doubleValue())));
 
         verify(categoryService, times(1)).findByName(NAME_ONE);
         verifyNoMoreInteractions(categoryService);
+
+        verify(productService, times(1)).findAllByCategoryName(any());
+        verifyNoMoreInteractions(productService);
     }
 
     @Test

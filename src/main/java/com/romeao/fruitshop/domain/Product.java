@@ -1,9 +1,6 @@
 package com.romeao.fruitshop.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -28,16 +25,21 @@ public class Product extends BaseEntity {
     )
     private List<Vendor> vendors = new ArrayList<>();
 
-    public static Product of(Long id, String name, BigDecimal price) {
+    @ManyToOne
+    @NotNull
+    private Category category;
+
+    public static Product of(Long id, String name, BigDecimal price, Category category) {
         Product result = new Product();
         result.id = id;
         result.name = name;
         result.price = price;
+        result.category = category;
         return result;
     }
 
-    public static Product of(String name, BigDecimal price) {
-        return of(null, name, price);
+    public static Product of(String name, BigDecimal price, Category category) {
+        return of(null, name, price, category);
     }
 
     public String getName() {
@@ -62,5 +64,13 @@ public class Product extends BaseEntity {
 
     public void setVendors(List<Vendor> vendors) {
         this.vendors = vendors;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

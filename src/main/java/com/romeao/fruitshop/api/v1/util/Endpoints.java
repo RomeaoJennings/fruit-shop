@@ -32,4 +32,12 @@ public class Endpoints {
             return concatenate(URL, id.toString());
         }
     }
+
+    public static class Products {
+        public static final String URL = API_BASE + "/products";
+
+        public static String byProductIdUrl(Long productId) {
+            return concatenate(URL, productId.toString());
+        }
+    }
 }

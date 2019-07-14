@@ -20,7 +20,8 @@ public class CategoryDto extends BaseDto {
         this.name = name;
     }
 
-    public String getCategoryUrl() {
-        return id == null ? null : Endpoints.Categories.byCategoryNameUrl(name);
+    public void addCategoryUrl() {
+        if (id == null) { throw new IllegalStateException("Cannot provide link with null id."); }
+        links.put("categoryUrl", Endpoints.Categories.byCategoryNameUrl(name));
     }
 }
