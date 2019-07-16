@@ -51,4 +51,4 @@ jobs:
 
       # send code coverage to CodeCov.io
       - codecov/upload:
-          file: target/my-reports/*
+          file: target/site/jacoco/jacoco.xml
